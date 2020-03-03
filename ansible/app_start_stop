@@ -1,0 +1,105 @@
+#!/bin/bash
+#
+# Startup script for a spring boot app
+#
+# description: HelloWorld Api
+
+
+# the name of the jar
+PROJECT_NAME=HelloWorld
+
+# base directory for jar
+APP_HOME=/apps/vcs_devops/$PROJECT_NAME
+export APP_HOME
+
+# the HelloWorld.jar path
+APP_JAR="$APP_HOME/$PROJECT_NAME.jar"
+
+
+# spring boot log-file
+LOG="$APP_HOME/../applogs/$PROJECT_NAME.log"
+
+LOCK="$APP_HOME/lockfile"
+
+RETVAL=0
+
+pid_of_HelloWorld() {
+    pgrep -f "java.*$PROJECT_NAME"
+}
+
+start() {
+    [ -e "$LOG" ] && cnt=`wc -l "$LOG" | awk '{ print $1 }'` || cnt=1
+
+    echo -n $"Starting $PROJECT_NAME: "
+
+    cd "$APP_HOME"
+
+    nohup java -jar "$APP_JAR"  >> "$LOG" 2>&1 &
+
+    while { pid_of_HelloWorld > /dev/null ; } &&
+        ! { tail --lines=+$cnt "$LOG" | grep -q ' Started Application in' ; } ; do
+        sleep 1
+    done
+
+    pid_of_HelloWorld > /dev/null
+    RETVAL=$?
+    [ $RETVAL = 0 ] && success $"$STRING" || failure $"$STRING"
+    echo
+
+    [ $RETVAL = 0 ] && touch "$LOCK"
+}
+
+
+stop() {
+    echo -n "Stopping $PROJECT_NAME: "
+
+    pid=`pid_of_HelloWorld`
+    [ -n "$pid" ] && kill $pid
+    RETVAL=$?
+    cnt=10
+    while [ $RETVAL = 0 -a $cnt -gt 0 ] &&
+        { pid_of_HelloWorld > /dev/null ; } ; do
+            sleep 1
+            ((cnt--))
+    done
+
+    [ $RETVAL = 0 ] && rm -f "$LOCK"
+    [ $RETVAL = 0 ] && success $"$STRING" || failure $"$STRING"
+    echo
+}
+
+status() {
+    pid=`pid_of_HelloWorld`
+    if [ -n "$pid" ]; then
+        echo "$PROJECT_NAME (pid $pid) is running..."
+        return 0
+    fi
+    if [ -f "$LOCK" ]; then
+        echo $"${base} dead but subsys locked"
+        return 2
+    fi
+    echo "$PROJECT_NAME is stopped"
+    return 3
+}
+
+# See how it was called.
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    status)
+        status
+        ;;
+    restart)
+        stop
+        start
+        ;;
+    *)
+        echo $"Usage: $0 {start|stop|restart|status}"
+        exit 1
+esac
+
+exit $RETVAL

@@ -1,0 +1,7 @@
+def APPNAME="HelloWorld"
+def VER='1.0-1'
+def ARTIFACTORY_URL="http://10.176.2.113:8044/artifactory"
+def JAR_LOCATION="${jenkinsWorkspace}/target/${APPNAME}-${VER}.jar"
+
+       def curlcmd=sh ('curl -sSf -H "X-JFrog-Art-Api:AKCp5ekSuhRL3zCTtSoG7B68dfKAYaq3vqvzsuY1Pz2Vn8b6WhuGZZrrB8eKC3YEN7jySKbrA" -X PUT -T' + jenkinsWorkspace + '/target/' + APPNAME + '-' + VER + '.jar'  + ARTIFACTORY_URL + '/' + APPNAME + '/' + BUILD_NUMBER )
+        echo "$curlcmd"

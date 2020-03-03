@@ -1,0 +1,43 @@
+- hosts:
+    localhost
+  name: To deploy the Java application
+  become: yes
+  become_user: vcs_devops
+
+  tasks:
+    - name: Setting up directories
+      file:
+         state: directory
+         path: "{{ item }}"
+         mode: "0755"
+         owner: "{{ app_user }}"
+         group: "{{ app_group }}"
+      with_items:
+        - "{{ app_root_install }}"
+        - "{{ app_dir }}"
+        -  "{{ app_log_dir }}"
+
+    - name: Copy the jar file to the correct folders
+      copy:
+        src: "{{ item }}"
+        dest: "{{ app_dir }}/HelloWorld.jar"
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+      with_items:
+        - "{{ playbook_dir }}/../target/HelloWorld-1.0-1.jar"
+
+    - name: Copy the start script file to the correct folders
+      copy:
+        src: "{{ item }}"
+        dest: "{{ app_dir }}"
+        mode: "0755"
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+      with_items:
+        -  "{{ playbook_dir }}/app_start_stop"
+
+    - name: Restart the service
+      shell: "{{ app_dir }}/app_start_stop restart"
+      register: shell_result
+    - debug:
+        var: shell_result.stdout_lines

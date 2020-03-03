@@ -1,0 +1,6 @@
+[all:vars]
+app_user=vcs_devops
+app_group=vcs_devops
+app_root_install=/apps/vcs_devops
+app_dir="{{ app_root_install }}/HelloWorld"
+app_log_dir="{{ app_root_install }}/applogs/"
