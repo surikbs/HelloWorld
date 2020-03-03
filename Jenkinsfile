@@ -22,7 +22,7 @@ node (BUILD_NODE){
     }
     stage('Code Coverage')
     {
-        jacoco buildOverBuild: true, changeBuildStatus: true, classPattern: '**/target/classes', runAlways: true, skipCopyOfSrcFiles: true
+        jacoco buildOverBuild: true, changeBuildStatus: true, classPattern: '**/target/classes', runAlways: true
     }
     stage ('Upload to Artifactory')
     {
