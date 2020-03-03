@@ -20,6 +20,10 @@ node (BUILD_NODE){
     {
         sh "mvn clean package"
     }
+    stage('Code Coverage')
+    {
+        jacoco()
+    }
     stage ('Upload to Artifactory')
     {
         def curlcmd=sh ('curl -sSf -H "X-JFrog-Art-Api:AKCp5ekSuhRL3zCTtSoG7B68dfKAYaq3vqvzsuY1Pz2Vn8b6WhuGZZrrB8eKC3YEN7jySKbrA" -X PUT -T ' + JENKINSWORKSPACE + '/target/' + APPNAME + '-' + VER + '.jar '  + ARTIFACTORY_URL + '/' + APPNAME + '/' + BUILD_NUMBER + '/' + APPNAME + '-' + VER + '.jar ' )
