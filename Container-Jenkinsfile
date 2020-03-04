@@ -26,9 +26,8 @@ node (BUILD_NODE){
     }
     stage ('Build Application Image')
     {
-        docker build -t ${APPNAME}/${APPNAME}-${VER} .
-    }
-    stage ('Upload to Artifactory')
+        def docbuild=('docker build -t ' + APPNAME + '/' + APPNAME + '-' + VER + ' .' )
+  /*  stage ('Upload to Artifactory')
     {
         def curlcmd=sh ('curl -sSf -H "X-JFrog-Art-Api:AKCp5ekSuhRL3zCTtSoG7B68dfKAYaq3vqvzsuY1Pz2Vn8b6WhuGZZrrB8eKC3YEN7jySKbrA" -X PUT -T ' + JENKINSWORKSPACE + '/target/' + APPNAME + '-' + VER + '.jar '  + ARTIFACTORY_URL + '/' + APPNAME + '/' + BUILD_NUMBER + '/' + APPNAME + '-' + VER + '.jar ' )
         echo "$curlcmd"
@@ -45,6 +44,6 @@ node (BUILD_NODE){
     stage ('Deploy'){
         def deploy_cmd= $/ ssh -q ${destinfo} -oStrictHostKeyChecking=no -C 'ansible-playbook -i ansible\/ansible.hosts ansible\/deploy.yaml' /$
         sh deploy_cmd
-    }
+    } */
 
 }
