@@ -27,7 +27,7 @@ node (BUILD_NODE){
     }
     stage ('Build Application Image')
     {
-        def imagebuild=('docker build -t ' + APPNAME + '-' + VER + ' .' )
+        def imagebuild=('sudo docker build -t ' + APPNAME + '-' + VER + ' .' )
         sh imagebuild
        }
   /*  stage ('Upload to Artifactory')
