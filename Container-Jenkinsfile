@@ -1,7 +1,7 @@
 import groovy.json.*
 
 def BUILD_NODE="jenkins_slave"
-def APPNAME="HelloWorld"
+def APPNAME="helloworld"
 def VER='1.0-1'
 def ARTIFACTORY_URL="http://10.176.2.113:8044/artifactory"
 
@@ -27,7 +27,7 @@ node (BUILD_NODE){
     }
     stage ('Build Application Image')
     {
-        def imagebuild=('docker build -t ' + APPNAME + '/' + APPNAME + '-' + VER + ' .' )
+        def imagebuild=('docker build -t ' + APPNAME + '-' + VER + ' .' )
         sh imagebuild
        }
   /*  stage ('Upload to Artifactory')
