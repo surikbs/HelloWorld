@@ -1,6 +1,6 @@
 import groovy.json.*
 
-def BUILD_NODE="jenkins_slave1"
+def BUILD_NODE="jenkins_slave"
 def APPNAME="HelloWorld"
 def VER='1.0-1'
 def ARTIFACTORY_URL="http://10.176.2.113:8044/artifactory"
